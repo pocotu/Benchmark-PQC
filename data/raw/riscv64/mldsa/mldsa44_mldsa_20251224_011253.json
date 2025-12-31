@@ -1,0 +1,39 @@
+{
+  "algorithm": "mldsa44",
+  "architecture": "riscv64",
+  "results": [
+    {
+      "operation": "keygen",
+      "num_samples": 8688,
+      "mean_us": 869.65,
+      "median_us": 863.90,
+      "stddev_us": 23.30,
+      "min_us": 809.66,
+      "max_us": 949.93,
+      "p95_us": 922.03,
+      "p99_us": 943.06
+    },
+    {
+      "operation": "sign",
+      "num_samples": 9450,
+      "mean_us": 4795.27,
+      "median_us": 4027.54,
+      "stddev_us": 2667.82,
+      "min_us": 1859.21,
+      "max_us": 12834.75,
+      "p95_us": 10450.68,
+      "p99_us": 12310.38
+    },
+    {
+      "operation": "verify",
+      "num_samples": 9993,
+      "mean_us": 982.73,
+      "median_us": 1011.66,
+      "stddev_us": 62.80,
+      "min_us": 886.26,
+      "max_us": 1229.67,
+      "p95_us": 1046.58,
+      "p99_us": 1056.08
+    }
+  ]
+}

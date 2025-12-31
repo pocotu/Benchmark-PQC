@@ -1,0 +1,4 @@
+algorithm,architecture,operation,num_samples,mean_us,median_us,stddev_us,min_us,max_us,p95_us,p99_us
+mldsa87,native,keygen,884,78.76,76.38,5.02,73.15,96.53,91.25,94.69
+mldsa87,native,sign,945,147.71,134.52,50.87,88.27,299.35,254.17,286.80
+mldsa87,native,verify,892,73.85,71.64,5.10,69.06,90.89,85.06,89.44

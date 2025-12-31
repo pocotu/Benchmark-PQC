@@ -1,0 +1,4 @@
+algorithm,architecture,operation,num_samples,mean_us,median_us,stddev_us,min_us,max_us,p95_us,p99_us
+mldsa44,riscv64,keygen,8688,869.65,863.90,23.30,809.66,949.93,922.03,943.06
+mldsa44,riscv64,sign,9450,4795.27,4027.54,2667.82,1859.21,12834.75,10450.68,12310.38
+mldsa44,riscv64,verify,9993,982.73,1011.66,62.80,886.26,1229.67,1046.58,1056.08

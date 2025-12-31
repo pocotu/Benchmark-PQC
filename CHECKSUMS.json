@@ -1,0 +1,11 @@
+{
+  "files": {
+    "analysis/analysis_summary.json": "8ce576c7b8d1b49b93afbc6af0254029ecd062906e1ec973dedd46cb86596f1a",
+    "analysis/hypothesis_tests.csv": "a7f3747e9e3af113f75d4aae3173c22b5f3c63de11c9ceac610947b8802dc3e4",
+    "analysis/performance_ratios.csv": "2d01f44bcbe28d41f4c714d93a97556811db167a80a961c011074be6e9505a87",
+    "analysis/pki_throughput_model.csv": "4195385f01e4c2b18619057b9919b6db3034b9f7bc217afba5c7f90950a708ee",
+    "analysis/tls_overhead_model.csv": "42f266782b316694efbf63d2f2e5cb11ef0cf72c25879236dd8b24fa663e5092",
+    "analysis/summary_table.csv": "5944cc3087db6d1855032e06891131630889bcbf3753c1fe06b41ba721744fee"
+  },
+  "generated": "2024-12-24"
+}

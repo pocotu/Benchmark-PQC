@@ -1,0 +1,39 @@
+{
+  "algorithm": "mldsa44",
+  "architecture": "arm64",
+  "results": [
+    {
+      "operation": "keygen",
+      "num_samples": 9923,
+      "mean_us": 1131.07,
+      "median_us": 1028.90,
+      "stddev_us": 415.54,
+      "min_us": 656.95,
+      "max_us": 2388.73,
+      "p95_us": 1944.27,
+      "p99_us": 2191.64
+    },
+    {
+      "operation": "sign",
+      "num_samples": 9453,
+      "mean_us": 5143.49,
+      "median_us": 4320.80,
+      "stddev_us": 2961.39,
+      "min_us": 1629.21,
+      "max_us": 14199.28,
+      "p95_us": 11390.02,
+      "p99_us": 13529.25
+    },
+    {
+      "operation": "verify",
+      "num_samples": 9405,
+      "mean_us": 1033.78,
+      "median_us": 884.45,
+      "stddev_us": 289.03,
+      "min_us": 798.52,
+      "max_us": 1892.15,
+      "p95_us": 1697.63,
+      "p99_us": 1848.31
+    }
+  ]
+}

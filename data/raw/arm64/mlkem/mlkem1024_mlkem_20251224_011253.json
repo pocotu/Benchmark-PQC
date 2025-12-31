@@ -1,0 +1,39 @@
+{
+  "algorithm": "mlkem1024",
+  "architecture": "arm64",
+  "results": [
+    {
+      "operation": "keygen",
+      "num_samples": 8791,
+      "mean_us": 297.49,
+      "median_us": 285.94,
+      "stddev_us": 30.65,
+      "min_us": 261.95,
+      "max_us": 408.07,
+      "p95_us": 366.56,
+      "p99_us": 399.94
+    },
+    {
+      "operation": "encaps",
+      "num_samples": 9677,
+      "mean_us": 385.76,
+      "median_us": 353.38,
+      "stddev_us": 88.12,
+      "min_us": 296.19,
+      "max_us": 657.45,
+      "p95_us": 564.58,
+      "p99_us": 631.84
+    },
+    {
+      "operation": "decaps",
+      "num_samples": 9020,
+      "mean_us": 414.09,
+      "median_us": 393.72,
+      "stddev_us": 56.10,
+      "min_us": 358.09,
+      "max_us": 602.23,
+      "p95_us": 539.78,
+      "p99_us": 587.78
+    }
+  ]
+}

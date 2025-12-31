@@ -1,0 +1,4 @@
+algorithm,architecture,operation,num_samples,mean_us,median_us,stddev_us,min_us,max_us,p95_us,p99_us
+mldsa65,native,keygen,827,48.64,48.02,1.83,46.05,55.70,53.08,55.45
+mldsa65,native,sign,959,123.21,108.01,56.76,55.74,298.80,239.84,277.65
+mldsa65,native,verify,819,44.88,44.42,1.15,44.14,49.97,47.75,49.74

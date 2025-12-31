@@ -1,0 +1,73 @@
+{
+    "experiment_id": "exp_20251223_234704",
+    "timestamp": "2025-12-24T04:47:04Z",
+    "system": {
+        "os": {
+            "hostname": "k4li-rog",
+            "kernel": "6.14.0-37-generic",
+            "distribution": "Ubuntu 24.04.3 LTS",
+            "architecture": "x86_64"
+        },
+        "cpu": {
+            "model": "Intel(R) Core(TM) i7-10750H CPU @ 2.60GHz",
+            "count": 12,
+            "architecture": "x86_64"
+        },
+        "memory": {
+            "total_kb": 16156712,
+            "available_kb": 8694416
+        },
+        "disk": {
+            "total_kb": 68227400,
+            "used_kb": 35522220,
+            "available_kb": 29193628,
+            "path": "/home/k4li/Documents/proyectos/PQC/Benchmarks-PQC"
+        }
+    },
+    "software": {
+        "compilers": {
+            "gcc": {
+                "version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+                "path": "/usr/bin/gcc"
+            },
+            "cmake": {
+                "version": "cmake version 3.28.3",
+                "path": "/usr/bin/cmake"
+            }
+        },
+        "liboqs": {
+            "version": "0.10.0",
+            "path": "/home/k4li/Documents/proyectos/PQC/Benchmarks-PQC/build/liboqs/build-native",
+            "library_size_bytes": "unknown",
+            "build_timestamp": "unknown"
+        },
+        "git": {
+            "commit": "5eaead9d8b6ae576b15740e229eef32e00c121a1",
+            "branch": "update",
+            "dirty": true,
+            "remote": "https://github.com/pocotu/Benchmarks-PQC.git"
+        }
+    },
+    "configuration": {
+        "mlkem_algorithms": [
+            "mlkem512",
+            "mlkem768",
+            "mlkem1024"
+        ],
+        "mldsa_algorithms": [
+            "mldsa44",
+            "mldsa65",
+            "mldsa87"
+        ],
+        "architectures": [
+            "native",
+            "arm64",
+            "riscv64"
+        ],
+        "iterations": 10000,
+        "warmup_iterations": 1000,
+        "message_size_bytes": 1024,
+        "remove_outliers": true,
+        "max_cv_percent": 15.0
+    }
+}

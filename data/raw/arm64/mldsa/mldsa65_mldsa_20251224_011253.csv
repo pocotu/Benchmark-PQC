@@ -1,0 +1,4 @@
+algorithm,architecture,operation,num_samples,mean_us,median_us,stddev_us,min_us,max_us,p95_us,p99_us
+mldsa65,arm64,keygen,8737,1110.95,1090.05,41.04,1055.81,1264.06,1211.28,1251.27
+mldsa65,arm64,sign,9533,6328.16,5286.71,3757.85,2270.23,17773.13,14253.17,16899.96
+mldsa65,arm64,verify,8982,1324.88,1314.44,56.69,1247.01,1502.33,1443.60,1489.29

@@ -1,0 +1,39 @@
+{
+  "algorithm": "mlkem768",
+  "architecture": "native",
+  "results": [
+    {
+      "operation": "keygen",
+      "num_samples": 880,
+      "mean_us": 20.89,
+      "median_us": 21.29,
+      "stddev_us": 1.38,
+      "min_us": 16.42,
+      "max_us": 24.90,
+      "p95_us": 22.62,
+      "p99_us": 23.54
+    },
+    {
+      "operation": "encaps",
+      "num_samples": 989,
+      "mean_us": 18.19,
+      "median_us": 16.90,
+      "stddev_us": 3.96,
+      "min_us": 14.23,
+      "max_us": 31.67,
+      "p95_us": 24.66,
+      "p99_us": 28.87
+    },
+    {
+      "operation": "decaps",
+      "num_samples": 980,
+      "mean_us": 18.22,
+      "median_us": 16.63,
+      "stddev_us": 2.71,
+      "min_us": 16.18,
+      "max_us": 26.54,
+      "p95_us": 23.45,
+      "p99_us": 24.80
+    }
+  ]
+}

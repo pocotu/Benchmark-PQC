@@ -1,0 +1,4 @@
+algorithm,architecture,operation,num_samples,mean_us,median_us,stddev_us,min_us,max_us,p95_us,p99_us
+mlkem512,native,keygen,811,9.36,9.24,0.32,9.04,11.01,10.06,10.55
+mlkem512,native,encaps,848,10.75,10.24,1.09,9.85,15.12,13.47,14.69
+mlkem512,native,decaps,991,13.77,14.56,2.13,10.51,21.26,16.33,18.84

@@ -1,0 +1,4 @@
+algorithm,architecture,operation,num_samples,mean_us,median_us,stddev_us,min_us,max_us,p95_us,p99_us
+mlkem512,riscv64,keygen,9518,125.73,124.47,5.78,119.19,144.31,137.71,142.30
+mlkem512,riscv64,encaps,9393,143.34,142.55,4.86,138.22,159.16,153.49,157.60
+mlkem512,riscv64,decaps,9355,175.76,172.27,5.83,170.00,194.55,188.77,192.87

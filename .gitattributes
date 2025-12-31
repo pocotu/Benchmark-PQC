@@ -1,0 +1,53 @@
+# Git Attributes for PQC Benchmarks Project
+# Ensures consistent line endings and proper diff/merge behavior
+
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Explicitly declare text files you want to always be normalized
+*.sh text eol=lf
+*.py text eol=lf
+*.c text eol=lf
+*.h text eol=lf
+*.cpp text eol=lf
+*.hpp text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.cmake text eol=lf
+Makefile text eol=lf
+
+# Denote binary files
+*.so binary
+*.a binary
+*.o binary
+*.bin binary
+*.exe binary
+*.dll binary
+*.dylib binary
+
+# Archives
+*.zip binary
+*.tar binary
+*.gz binary
+*.bz2 binary
+*.xz binary
+
+# Images
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary
+
+# Documents
+*.pdf binary
+
+# Custom diff drivers for specific file types
+*.py diff=python
+*.c diff=cpp
+*.h diff=cpp
+*.sh diff=bash

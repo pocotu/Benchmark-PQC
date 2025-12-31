@@ -1,0 +1,42 @@
+{
+  "metadata": {
+    "generated_at": "2025-12-24T19:32:05.885301",
+    "total_records": 54,
+    "architectures": [
+      "ARM64",
+      "RISC-V64",
+      "x86_64"
+    ],
+    "algorithms": [
+      "ML-DSA-44",
+      "ML-DSA-65",
+      "ML-DSA-87",
+      "ML-KEM-1024",
+      "ML-KEM-512",
+      "ML-KEM-768"
+    ]
+  },
+  "summary": {
+    "mlkem": {
+      "arm64_advantage_percent": -2.0823414486733136,
+      "avg_ratio_arm_riscv": 1.020823414486733,
+      "avg_overhead_qemu": 12.56934370613119
+    },
+    "mldsa": {
+      "arm64_advantage_percent": 9.133153594591796,
+      "avg_ratio_arm_riscv": 0.908668464054082,
+      "avg_overhead_qemu": 31.8924254844118
+    }
+  },
+  "hypothesis_tests": {
+    "total_comparisons": 18,
+    "significant_at_005": 18,
+    "avg_effect_size": 3.8025500229341938
+  },
+  "key_findings": [
+    "ML-KEM: ARM64 y RISC-V64 tienen rendimiento equivalente (diferencia -2.1%)",
+    "ML-DSA: ARM64 es 9.1% m\u00e1s r\u00e1pido que RISC-V64",
+    "Overhead QEMU promedio: 22.2\u00d7 vs x86_64 nativo",
+    "Sign es la operaci\u00f3n m\u00e1s costosa en ML-DSA (2-2.5\u00d7 KeyGen)"
+  ]
+}

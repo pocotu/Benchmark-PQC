@@ -1,0 +1,4 @@
+algorithm,architecture,operation,num_samples,mean_us,median_us,stddev_us,min_us,max_us,p95_us,p99_us
+mlkem768,arm64,keygen,9883,262.70,235.66,71.67,179.82,505.76,392.68,451.18
+mlkem768,arm64,encaps,9160,226.37,221.80,13.79,211.58,271.40,256.10,267.40
+mlkem768,arm64,decaps,9153,293.01,285.12,27.00,264.34,382.15,351.24,374.76
