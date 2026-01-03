@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Generación de Figuras para Tesis PQC
-Fase 5.7: Visualizaciones
+Figure Generation for PQC Thesis
+Phase 5.7: Visualizations
 
-Este script genera:
-- Gráficas de barras comparativas
-- Box plots de distribución
-- Heatmaps de rendimiento
-- Gráficas de escalamiento por nivel de seguridad
+This script generates:
+- Comparative bar charts
+- Distribution box plots
+- Performance heatmaps
+- Security level scaling charts
 """
 
 import pandas as pd
@@ -17,17 +17,17 @@ import matplotlib.patches as mpatches
 from pathlib import Path
 from datetime import datetime
 
-# Configuración de rutas (relativas a la raíz del proyecto)
+# Path configuration (relative to project root)
 BASE_DIR = Path(__file__).parent.parent.parent  # Benchmarks-PQC/
 DATA_DIR = BASE_DIR / "data" / "processed"
 OUTPUT_DIR = BASE_DIR / "results" / "figures"
 THESIS_DIR = BASE_DIR.parent / "docs-PQC" / "tesis" / "figures"
 
-# Crear directorios
+# Create directories
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 THESIS_DIR.mkdir(parents=True, exist_ok=True)
 
-# Configuración de estilo
+# Style configuration
 plt.style.use('seaborn-v0_8-whitegrid')
 plt.rcParams['figure.figsize'] = (10, 6)
 plt.rcParams['font.size'] = 11
@@ -36,7 +36,7 @@ plt.rcParams['axes.labelsize'] = 12
 plt.rcParams['legend.fontsize'] = 10
 plt.rcParams['figure.dpi'] = 150
 
-# Colores para arquitecturas
+# Colors for architectures
 COLORS = {
     'x86_64': '#2ecc71',    # Verde
     'ARM64': '#3498db',      # Azul
@@ -45,16 +45,16 @@ COLORS = {
 
 
 def load_data():
-    """Carga los datos procesados."""
+    """Load processed data."""
     csv_path = DATA_DIR / "processed_data.csv"
     df = pd.read_csv(csv_path)
-    print(f"✓ Datos cargados: {len(df)} registros")
+    print(f" Data loaded: {len(df)} records")
     return df
 
 
 def plot_mlkem_comparison(df):
-    """Genera gráfica comparativa de ML-KEM por arquitectura."""
-    print("\n📊 Generando gráfica ML-KEM...")
+    """Generate comparative chart de ML-KEM por arquitectura."""
+    print("\n Generating chart ML-KEM...")
     
     fig, axes = plt.subplots(1, 3, figsize=(14, 5))
     
@@ -79,7 +79,7 @@ def plot_mlkem_comparison(df):
             
             bars = ax.bar(x + i*width, values, width, label=arch, color=COLORS[arch])
             
-            # Añadir valores sobre las barras
+            # Add values sobre las barras
             for bar, val in zip(bars, values):
                 if val > 0:
                     ax.annotate(f'{val:.1f}',
@@ -87,15 +87,15 @@ def plot_mlkem_comparison(df):
                                xytext=(0, 3), textcoords="offset points",
                                ha='center', va='bottom', fontsize=8, rotation=45)
         
-        ax.set_xlabel('Algoritmo')
-        ax.set_ylabel('Tiempo (µs)')
+        ax.set_xlabel('Algorithm')
+        ax.set_ylabel('Time (µs)')
         ax.set_title(f'ML-KEM {title}')
         ax.set_xticks(x + width)
         ax.set_xticklabels(['512', '768', '1024'])
         ax.legend()
         ax.set_yscale('log')
     
-    plt.suptitle('Comparación de Rendimiento ML-KEM por Arquitectura', fontsize=14, fontweight='bold')
+    plt.suptitle('Performance Comparison ML-KEM by Architecture', fontsize=14, fontweight='bold')
     plt.tight_layout()
     
     # Guardar
@@ -104,12 +104,12 @@ def plot_mlkem_comparison(df):
         fig.savefig(THESIS_DIR / f'mlkem_comparison.{fmt}', dpi=300, bbox_inches='tight')
     
     plt.close()
-    print(f"  ✓ Guardado: mlkem_comparison.png/pdf")
+    print(f"   Saved: mlkem_comparison.png/pdf")
 
 
 def plot_mldsa_comparison(df):
-    """Genera gráfica comparativa de ML-DSA por arquitectura."""
-    print("\n📊 Generando gráfica ML-DSA...")
+    """Generate comparative chart de ML-DSA por arquitectura."""
+    print("\n Generating chart ML-DSA...")
     
     fig, axes = plt.subplots(1, 3, figsize=(14, 5))
     
@@ -134,7 +134,7 @@ def plot_mldsa_comparison(df):
             
             bars = ax.bar(x + i*width, values, width, label=arch, color=COLORS[arch])
             
-            # Añadir valores sobre las barras
+            # Add values sobre las barras
             for bar, val in zip(bars, values):
                 if val > 0:
                     ax.annotate(f'{val:.0f}',
@@ -142,15 +142,15 @@ def plot_mldsa_comparison(df):
                                xytext=(0, 3), textcoords="offset points",
                                ha='center', va='bottom', fontsize=8, rotation=45)
         
-        ax.set_xlabel('Algoritmo')
-        ax.set_ylabel('Tiempo (µs)')
+        ax.set_xlabel('Algorithm')
+        ax.set_ylabel('Time (µs)')
         ax.set_title(f'ML-DSA {title}')
         ax.set_xticks(x + width)
         ax.set_xticklabels(['44', '65', '87'])
         ax.legend()
         ax.set_yscale('log')
     
-    plt.suptitle('Comparación de Rendimiento ML-DSA por Arquitectura', fontsize=14, fontweight='bold')
+    plt.suptitle('Performance Comparison ML-DSA by Architecture', fontsize=14, fontweight='bold')
     plt.tight_layout()
     
     # Guardar
@@ -159,12 +159,12 @@ def plot_mldsa_comparison(df):
         fig.savefig(THESIS_DIR / f'mldsa_comparison.{fmt}', dpi=300, bbox_inches='tight')
     
     plt.close()
-    print(f"  ✓ Guardado: mldsa_comparison.png/pdf")
+    print(f"   Saved: mldsa_comparison.png/pdf")
 
 
 def plot_architecture_overhead(df):
     """Genera gráfica de overhead de emulación QEMU."""
-    print("\n📊 Generando gráfica de overhead QEMU...")
+    print("\n Generating chart de overhead QEMU...")
     
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
     
@@ -188,15 +188,15 @@ def plot_architecture_overhead(df):
     bars1 = ax.bar(x - width/2, arm_overhead, width, label='ARM64', color=COLORS['ARM64'])
     bars2 = ax.bar(x + width/2, riscv_overhead, width, label='RISC-V64', color=COLORS['RISC-V64'])
     
-    ax.set_xlabel('Algoritmo')
+    ax.set_xlabel('Algorithm')
     ax.set_ylabel('Overhead (× vs x86_64)')
-    ax.set_title('ML-KEM: Overhead de Emulación QEMU')
+    ax.set_title('ML-KEM: QEMU Emulation Overhead')
     ax.set_xticks(x)
     ax.set_xticklabels(['512', '768', '1024'])
     ax.legend()
     ax.axhline(y=1, color='gray', linestyle='--', alpha=0.5)
     
-    # Añadir valores
+    # Add values
     for bar in bars1:
         ax.annotate(f'{bar.get_height():.1f}×',
                    xy=(bar.get_x() + bar.get_width()/2, bar.get_height()),
@@ -227,15 +227,15 @@ def plot_architecture_overhead(df):
     bars1 = ax.bar(x - width/2, arm_overhead, width, label='ARM64', color=COLORS['ARM64'])
     bars2 = ax.bar(x + width/2, riscv_overhead, width, label='RISC-V64', color=COLORS['RISC-V64'])
     
-    ax.set_xlabel('Algoritmo')
+    ax.set_xlabel('Algorithm')
     ax.set_ylabel('Overhead (× vs x86_64)')
-    ax.set_title('ML-DSA: Overhead de Emulación QEMU')
+    ax.set_title('ML-DSA: QEMU Emulation Overhead')
     ax.set_xticks(x)
     ax.set_xticklabels(['44', '65', '87'])
     ax.legend()
     ax.axhline(y=1, color='gray', linestyle='--', alpha=0.5)
     
-    # Añadir valores
+    # Add values
     for bar in bars1:
         ax.annotate(f'{bar.get_height():.1f}×',
                    xy=(bar.get_x() + bar.get_width()/2, bar.get_height()),
@@ -247,7 +247,7 @@ def plot_architecture_overhead(df):
                    xytext=(0, 3), textcoords="offset points",
                    ha='center', va='bottom', fontsize=9)
     
-    plt.suptitle('Overhead de Emulación QEMU vs x86_64 Nativo', fontsize=14, fontweight='bold')
+    plt.suptitle('QEMU Emulation Overhead vs Native x86_64', fontsize=14, fontweight='bold')
     plt.tight_layout()
     
     # Guardar
@@ -256,12 +256,12 @@ def plot_architecture_overhead(df):
         fig.savefig(THESIS_DIR / f'qemu_overhead.{fmt}', dpi=300, bbox_inches='tight')
     
     plt.close()
-    print(f"  ✓ Guardado: qemu_overhead.png/pdf")
+    print(f"   Saved: qemu_overhead.png/pdf")
 
 
 def plot_arm_vs_riscv(df):
     """Genera gráfica de comparación ARM64 vs RISC-V64."""
-    print("\n📊 Generando gráfica ARM64 vs RISC-V64...")
+    print("\n Generating chart ARM64 vs RISC-V64...")
     
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
     
@@ -288,9 +288,9 @@ def plot_arm_vs_riscv(df):
         
         bars = ax.bar(x + i*width, advantages, width, label=op.capitalize())
     
-    ax.set_xlabel('Algoritmo')
-    ax.set_ylabel('Ventaja ARM64 (%)')
-    ax.set_title('ML-KEM: Ventaja de ARM64 sobre RISC-V64')
+    ax.set_xlabel('Algorithm')
+    ax.set_ylabel('ARM64 Advantage (%)')
+    ax.set_title('ML-KEM: ARM64 Advantage over RISC-V64')
     ax.set_xticks(x + width)
     ax.set_xticklabels(['512', '768', '1024'])
     ax.legend()
@@ -318,16 +318,16 @@ def plot_arm_vs_riscv(df):
         
         bars = ax.bar(x + i*width, advantages, width, label=op.capitalize())
     
-    ax.set_xlabel('Algoritmo')
-    ax.set_ylabel('Ventaja ARM64 (%)')
-    ax.set_title('ML-DSA: Ventaja de ARM64 sobre RISC-V64')
+    ax.set_xlabel('Algorithm')
+    ax.set_ylabel('ARM64 Advantage (%)')
+    ax.set_title('ML-DSA: ARM64 Advantage over RISC-V64')
     ax.set_xticks(x + width)
     ax.set_xticklabels(['44', '65', '87'])
     ax.legend()
     ax.axhline(y=0, color='black', linestyle='-', linewidth=0.5)
     ax.set_ylim(-30, 30)
     
-    plt.suptitle('Comparación ARM64 vs RISC-V64 (bajo QEMU)', fontsize=14, fontweight='bold')
+    plt.suptitle('Comparación ARM64 vs RISC-V64 (under QEMU)', fontsize=14, fontweight='bold')
     plt.tight_layout()
     
     # Guardar
@@ -336,12 +336,12 @@ def plot_arm_vs_riscv(df):
         fig.savefig(THESIS_DIR / f'arm_vs_riscv.{fmt}', dpi=300, bbox_inches='tight')
     
     plt.close()
-    print(f"  ✓ Guardado: arm_vs_riscv.png/pdf")
+    print(f"   Saved: arm_vs_riscv.png/pdf")
 
 
 def plot_security_level_scaling(df):
     """Genera gráfica de escalamiento por nivel de seguridad."""
-    print("\n📊 Generando gráfica de escalamiento...")
+    print("\n Generating chart de escalamiento...")
     
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
     
@@ -358,9 +358,9 @@ def plot_security_level_scaling(df):
         
         ax.plot(levels, means, 'o-', label=arch, color=COLORS[arch], linewidth=2, markersize=8)
     
-    ax.set_xlabel('Nivel de Seguridad (ML-KEM)')
-    ax.set_ylabel('Tiempo Promedio (µs)')
-    ax.set_title('ML-KEM: Escalamiento por Nivel')
+    ax.set_xlabel('Security Level (ML-KEM)')
+    ax.set_ylabel('Time Promedio (µs)')
+    ax.set_title('ML-KEM: Scaling by Level')
     ax.legend()
     ax.set_yscale('log')
     ax.set_xticks(levels)
@@ -378,14 +378,14 @@ def plot_security_level_scaling(df):
         
         ax.plot(levels, means, 'o-', label=arch, color=COLORS[arch], linewidth=2, markersize=8)
     
-    ax.set_xlabel('Nivel de Seguridad (ML-DSA)')
-    ax.set_ylabel('Tiempo Promedio (µs)')
-    ax.set_title('ML-DSA: Escalamiento por Nivel')
+    ax.set_xlabel('Security Level (ML-DSA)')
+    ax.set_ylabel('Time Promedio (µs)')
+    ax.set_title('ML-DSA: Scaling by Level')
     ax.legend()
     ax.set_yscale('log')
     ax.set_xticks(levels)
     
-    plt.suptitle('Escalamiento del Tiempo de Ejecución por Nivel de Seguridad', fontsize=14, fontweight='bold')
+    plt.suptitle('Escalamiento del Time de Ejecución por Security Level', fontsize=14, fontweight='bold')
     plt.tight_layout()
     
     # Guardar
@@ -394,12 +394,12 @@ def plot_security_level_scaling(df):
         fig.savefig(THESIS_DIR / f'security_scaling.{fmt}', dpi=300, bbox_inches='tight')
     
     plt.close()
-    print(f"  ✓ Guardado: security_scaling.png/pdf")
+    print(f"   Saved: security_scaling.png/pdf")
 
 
 def plot_operation_comparison(df):
     """Genera gráfica de comparación de operaciones."""
-    print("\n📊 Generando gráfica de operaciones...")
+    print("\n Generating chart de operaciones...")
     
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
     
@@ -425,9 +425,9 @@ def plot_operation_comparison(df):
         ax.bar(x + i*width - width, encaps_ratios, width/2, label=f'{arch} Encaps', alpha=0.7)
         ax.bar(x + i*width - width/2, decaps_ratios, width/2, label=f'{arch} Decaps', alpha=0.7)
     
-    ax.set_xlabel('Algoritmo')
+    ax.set_xlabel('Algorithm')
     ax.set_ylabel('Ratio vs KeyGen')
-    ax.set_title('ML-KEM: Costo Relativo de Operaciones')
+    ax.set_title('ML-KEM: Relative Operation Cost')
     ax.set_xticks(x)
     ax.set_xticklabels(['512', '768', '1024'])
     ax.axhline(y=1, color='gray', linestyle='--', alpha=0.5)
@@ -454,15 +454,15 @@ def plot_operation_comparison(df):
         ax.bar(x + i*width - width, sign_ratios, width/2, label=f'{arch} Sign', alpha=0.7)
         ax.bar(x + i*width - width/2, verify_ratios, width/2, label=f'{arch} Verify', alpha=0.7)
     
-    ax.set_xlabel('Algoritmo')
+    ax.set_xlabel('Algorithm')
     ax.set_ylabel('Ratio vs KeyGen')
-    ax.set_title('ML-DSA: Costo Relativo de Operaciones')
+    ax.set_title('ML-DSA: Relative Operation Cost')
     ax.set_xticks(x)
     ax.set_xticklabels(['44', '65', '87'])
     ax.axhline(y=1, color='gray', linestyle='--', alpha=0.5)
     ax.legend(loc='upper left', fontsize=8)
     
-    plt.suptitle('Costo Relativo de Operaciones (vs KeyGen = 1.0)', fontsize=14, fontweight='bold')
+    plt.suptitle('Relative Operation Cost (vs KeyGen = 1.0)', fontsize=14, fontweight='bold')
     plt.tight_layout()
     
     # Guardar
@@ -471,14 +471,14 @@ def plot_operation_comparison(df):
         fig.savefig(THESIS_DIR / f'operation_comparison.{fmt}', dpi=300, bbox_inches='tight')
     
     plt.close()
-    print(f"  ✓ Guardado: operation_comparison.png/pdf")
+    print(f"   Saved: operation_comparison.png/pdf")
 
 
 def plot_summary_heatmap(df):
-    """Genera heatmap resumen de rendimiento."""
-    print("\n📊 Generando heatmap de rendimiento...")
+    """Generate performance summary heatmap."""
+    print("\n Generating performance heatmap...")
     
-    # Crear matriz de datos
+    # Create data matrix
     algorithms = ['ML-KEM-512', 'ML-KEM-768', 'ML-KEM-1024', 
                   'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87']
     architectures = ['x86_64', 'ARM64', 'RISC-V64']
@@ -490,29 +490,29 @@ def plot_summary_heatmap(df):
             mean = df[(df['architecture'] == arch) & (df['algorithm'] == algo)]['mean_us'].mean()
             data[i, j] = mean
     
-    # Normalizar por fila (algoritmo)
+    # Normalize by row (algoritmo)
     data_norm = data / data[:, 0:1]  # Normalizar vs x86_64
     
     fig, ax = plt.subplots(figsize=(8, 6))
     
     im = ax.imshow(data_norm, cmap='RdYlGn_r', aspect='auto')
     
-    # Etiquetas
+    # Labels
     ax.set_xticks(np.arange(len(architectures)))
     ax.set_yticks(np.arange(len(algorithms)))
     ax.set_xticklabels(architectures)
     ax.set_yticklabels(algorithms)
     
-    # Rotar etiquetas
+    # Rotate labels
     plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
     
-    # Añadir valores
+    # Add values
     for i in range(len(algorithms)):
         for j in range(len(architectures)):
             text = ax.text(j, i, f'{data_norm[i, j]:.1f}×',
                           ha="center", va="center", color="black", fontsize=10)
     
-    ax.set_title('Overhead Relativo vs x86_64 Nativo\n(1.0× = igual rendimiento)', fontsize=12)
+    ax.set_title('Overhead Relativo vs Native x86_64\n(1.0× = equal performance)', fontsize=12)
     
     # Colorbar
     cbar = ax.figure.colorbar(im, ax=ax)
@@ -526,20 +526,20 @@ def plot_summary_heatmap(df):
         fig.savefig(THESIS_DIR / f'performance_heatmap.{fmt}', dpi=300, bbox_inches='tight')
     
     plt.close()
-    print(f"  ✓ Guardado: performance_heatmap.png/pdf")
+    print(f"   Saved: performance_heatmap.png/pdf")
 
 
 def main():
-    """Función principal."""
+    """Main function."""
     print("="*60)
-    print("GENERACIÓN DE FIGURAS - TESIS PQC")
+    print("FIGURE GENERATION - PQC THESIS")
     print("="*60)
-    print(f"Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    print(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     
-    # Cargar datos
+    # Load data
     df = load_data()
     
-    # Generar figuras
+    # Generate figures
     plot_mlkem_comparison(df)
     plot_mldsa_comparison(df)
     plot_architecture_overhead(df)
@@ -549,13 +549,13 @@ def main():
     plot_summary_heatmap(df)
     
     print("\n" + "="*60)
-    print("✅ FIGURAS GENERADAS")
+    print(" FIGURES GENERATED")
     print("="*60)
-    print(f"Directorio de salida: {OUTPUT_DIR}")
-    print(f"Directorio de tesis: {THESIS_DIR}")
+    print(f"Output directory: {OUTPUT_DIR}")
+    print(f"Thesis directory: {THESIS_DIR}")
     
     # Listar archivos generados
-    print("\n📁 Archivos generados:")
+    print("\n Generated files:")
     for f in sorted(OUTPUT_DIR.glob('*.png')):
         print(f"  • {f.name}")
 

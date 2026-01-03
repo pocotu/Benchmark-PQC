@@ -16,8 +16,7 @@
         validate-results backup-results run-full-campaign \
         analyze-results analyze-compare analyze-viz analyze-stats install-analysis-deps \
         compile-measure-sizes measure-sizes analyze-overhead \
-        process-data analyze-statistical generate-visualizations full-analysis \
-        model-pki-throughput calculate-pki-resources simulate-pki-scenarios full-pki-modeling \
+        analyze-statistical generate-visualizations \
         analyze-performance-factors
 
 # Prevent parallel execution of build targets to avoid race conditions
@@ -177,17 +176,9 @@ help:
 	@echo "  $(YELLOW)measure-sizes$(RESET)      - Measure PQC artifact sizes (keys, signatures, etc.)"
 	@echo "  $(YELLOW)analyze-overhead$(RESET)   - Analyze TLS 1.3, X.509 and PKI storage overhead"
 	@echo ""
-	@echo "$(GREEN)Deep Statistical Analysis Targets (Week 12):$(RESET)"
-	@echo "  $(YELLOW)process-data$(RESET)       - Process raw data (load, clean, normalize)"
-	@echo "  $(YELLOW)analyze-statistical$(RESET) - Advanced statistical analysis (t-test, ANOVA, CI)"
+	@echo "$(GREEN)Statistical Analysis Targets:$(RESET)"
+	@echo "  $(YELLOW)analyze-statistical$(RESET) - Statistical analysis (t-test, ratios, CI)"
 	@echo "  $(YELLOW)generate-visualizations$(RESET) - Generate charts (boxplots, heatmaps, violin plots)"
-	@echo "  $(YELLOW)full-analysis$(RESET)      - Complete pipeline (process + stats + visualizations)"
-	@echo ""
-	@echo "$(GREEN)PKI Throughput Modeling Targets (Week 13):$(RESET)"
-	@echo "  $(YELLOW)model-pki-throughput$(RESET) - Model CA throughput (issuance + validation)"
-	@echo "  $(YELLOW)calculate-pki-resources$(RESET) - Calculate hardware resources (CPU, RAM, storage, network)"
-	@echo "  $(YELLOW)simulate-pki-scenarios$(RESET) - Simulate load scenarios (baseline, peaks, growth)"
-	@echo "  $(YELLOW)full-pki-modeling$(RESET)   - Complete PKI modeling pipeline"
 	@echo ""
 	@echo "$(GREEN)Factor Analysis Targets (Week 14):$(RESET)"
 	@echo "  $(YELLOW)analyze-performance-factors$(RESET) - Analyze performance factors (compiler, QEMU, bottlenecks)"
@@ -633,53 +624,24 @@ check-data-raw:
 		echo "  $(BLUE)mkdir -p data/raw$(RESET)"; \
 		echo "  $(BLUE)cp results/mlkem_results.json data/raw/$(RESET)"; \
 		echo "  $(BLUE)cp results/mldsa_results.json data/raw/$(RESET)"; \
-		echo "  $(BLUE)make full-analysis$(RESET)"; \
+		echo "  $(BLUE)make analyze-statistical$(RESET)"; \
+		echo "  $(BLUE)make generate-visualizations$(RESET)"; \
 		echo ""; \
 		echo "$(RED)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(RESET)"; \
 		exit 1; \
 	fi
 
-## Procesar datos crudos (cargar, limpiar, normalizar)
-process-data: install-analysis-deps
-	@echo "$(CYAN)Processing raw data...$(RESET)"
-	@python3 src/analysis/data_processing.py \
-		--input-dir data/raw \
-		--output-dir data/processed
-	@echo "$(GREEN)✓ Processed data saved in data/processed/$(RESET)"
+## Run statistical analysis (t-test, ratios, CI)
+analyze-statistical: install-analysis-deps
+	@echo "$(CYAN)Running statistical analysis...$(RESET)"
+	@python3 src/analysis/statistical_analysis.py
+	@echo "$(GREEN)✓ Results saved in results/analysis/$(RESET)"
 
-## Run advanced statistical analysis (t-test, ANOVA, CI)
-analyze-statistical: install-analysis-deps process-data
-	@echo "$(CYAN)Running advanced statistical analysis...$(RESET)"
-	@python3 src/analysis/statistical_analysis.py \
-		--data-file data/processed/processed_data.json \
-		--output-dir results/tables
-	@echo "$(GREEN)✓ Results saved in results/tables/$(RESET)"
-
-## Generar visualizaciones (boxplots, heatmaps, violin plots)
-generate-visualizations: install-analysis-deps process-data
+## Generate visualizations (boxplots, heatmaps, violin plots)
+generate-visualizations: install-analysis-deps
 	@echo "$(CYAN)Generating visualizations...$(RESET)"
-	@python3 src/analysis/visualizations.py \
-		--data-file data/processed/processed_data.json \
-		--output-dir results/figures
+	@python3 src/analysis/generate_figures.py
 	@echo "$(GREEN)✓ Charts saved in results/figures/$(RESET)"
-
-## Complete analysis pipeline (process + statistics + visualizations)
-full-analysis: check-data-raw process-data analyze-statistical generate-visualizations
-	@echo ""
-	@echo "$(GREEN)═══════════════════════════════════════════════════════════$(RESET)"
-	@echo "$(GREEN)✓ COMPLETE ANALYSIS FINISHED$(RESET)"
-	@echo "$(GREEN)═══════════════════════════════════════════════════════════$(RESET)"
-	@echo ""
-	@echo "$(CYAN)Generated outputs:$(RESET)"
-	@echo "  • Processed data:         data/processed/"
-	@echo "  • Statistical tables:      results/tables/"
-	@echo "  • Visualizations:          results/figures/"
-	@echo ""
-	@echo "$(YELLOW)To review results:$(RESET)"
-	@echo "  $ cat data/processed/summary.json"
-	@echo "  $ cat results/tables/statistical_analysis.json"
-	@echo "  $ ls results/figures/"
-	@echo ""
 
 # ============================================================================
 # Sizes and Overhead
@@ -721,63 +683,6 @@ analyze-overhead:
 
 # ============================================================================
 # PKI Throughput Modeling
-# ============================================================================
-
-## Modelar throughput de CA (issuance + validation)
-model-pki-throughput:
-	@echo "$(CYAN)Modeling PKI throughput...$(RESET)"
-	@mkdir -p results/pki
-	@python3 src/pki/throughput_model.py \
-		--operation full \
-		--algorithm ML-DSA-65 \
-		--workers 4 \
-		--output results/pki/throughput_model.json
-	@echo "$(GREEN)✓ Throughput model saved in results/pki/throughput_model.json$(RESET)"
-
-## Calcular recursos de hardware necesarios (CPU, RAM, storage, network)
-calculate-pki-resources:
-	@echo "$(CYAN)Calculating hardware resources for PKI...$(RESET)"
-	@mkdir -p results/pki
-	@python3 src/pki/resource_calculator.py \
-		--users 10000 \
-		--throughput-target 100 \
-		--algorithm ML-DSA-65 \
-		--output results/pki/resources_10k.json \
-		--markdown results/pki/resources_10k.md
-	@echo "$(GREEN)✓ Resource report saved in results/pki/resources_10k.*$(RESET)"
-
-## Simular escenarios de carga (baseline, renewal peaks, growth)
-simulate-pki-scenarios:
-	@echo "$(CYAN)Simulating PKI load scenarios...$(RESET)"
-	@mkdir -p results/pki
-	@python3 src/pki/scenario_simulator.py \
-		--scenario all \
-		--users 10000 \
-		--workers 4 \
-		--output results/pki/scenarios.json
-	@echo "$(GREEN)✓ Simulation results saved in results/pki/scenarios.json$(RESET)"
-
-## Pipeline completo de modelado PKI
-full-pki-modeling: model-pki-throughput calculate-pki-resources simulate-pki-scenarios
-	@echo ""
-	@echo "$(GREEN)═══════════════════════════════════════════════════════════$(RESET)"
-	@echo "$(GREEN)✓ COMPLETE PKI MODELING FINISHED$(RESET)"
-	@echo "$(GREEN)═══════════════════════════════════════════════════════════$(RESET)"
-	@echo ""
-	@echo "$(CYAN)Generated outputs:$(RESET)"
-	@echo "  • Throughput model:     results/pki/throughput_model.json"
-	@echo "  • Hardware resources:        results/pki/resources_10k.json|md"
-	@echo "  • Scenario simulation:    results/pki/scenarios.json"
-	@echo ""
-	@echo "$(YELLOW)To review results:$(RESET)"
-	@echo "  $ cat results/pki/throughput_model.json"
-	@echo "  $ cat results/pki/resources_10k.md"
-	@echo "  $ cat results/pki/scenarios.json"
-	@echo ""
-	@echo "$(YELLOW)To scale to more users (example 100K):$(RESET)"
-	@echo "  $ make calculate-pki-resources USERS=100000 THROUGHPUT=1000"
-	@echo ""
-
 # ============================================================================
 # Performance Factors Analysis
 # ============================================================================

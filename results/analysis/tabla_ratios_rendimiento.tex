@@ -1,33 +1,33 @@
-% Tabla de ratios de rendimiento - Generada automáticamente
-% Fecha: 2025-12-24 19:32
+% Performance ratios table - Auto-generated
+% Date: 2026-01-02 23:14
 
 \begin{table}[H]
 \centering
-\caption{Ratios de rendimiento y overhead de emulación QEMU}
+\caption{Performance ratios and QEMU emulation overhead}
 \label{tab:performance_ratios}
 \begin{tabular}{llrrrrr}
 \toprule
-\textbf{Algoritmo} & \textbf{Op.} & \textbf{ARM64} & \textbf{RISC-V64} & \textbf{Ratio} & \textbf{Overhead} & \textbf{Ventaja} \\
+\textbf{Algorithm} & \textbf{Op.} & \textbf{ARM64} & \textbf{RISC-V64} & \textbf{Ratio} & \textbf{Overhead} & \textbf{Advantage} \\
  & & ($\mu$s) & ($\mu$s) & ARM/RV & QEMU & ARM64 \\
 \midrule
-ML-DSA-44 & keygen & 1131.07 & 869.65 & 1.30 & 27.8× & -30.1\% \\
-ML-DSA-44 & sign & 5143.49 & 4795.27 & 1.07 & 59.8× & -7.3\% \\
-ML-DSA-44 & verify & 1033.78 & 982.73 & 1.05 & 37.0× & -5.2\% \\
-ML-DSA-65 & keygen & 1110.95 & 1410.53 & 0.79 & 14.0× & 21.2\% \\
-ML-DSA-65 & sign & 6328.16 & 8046.93 & 0.79 & 43.3× & 21.4\% \\
-ML-DSA-65 & verify & 1324.88 & 1647.08 & 0.80 & 21.2× & 19.6\% \\
-ML-DSA-87 & keygen & 1706.11 & 2252.97 & 0.76 & 16.3× & 24.3\% \\
-ML-DSA-87 & sign & 7697.18 & 9126.69 & 0.84 & 43.5× & 15.7\% \\
-ML-DSA-87 & verify & 1948.94 & 2518.64 & 0.77 & 24.1× & 22.6\% \\
-ML-KEM-1024 & decaps & 414.09 & 471.63 & 0.88 & 9.5× & 12.2\% \\
-ML-KEM-1024 & encaps & 385.76 & 392.15 & 0.98 & 13.0× & 1.6\% \\
-ML-KEM-1024 & keygen & 297.49 & 364.20 & 0.82 & 11.7× & 18.3\% \\
-ML-KEM-512 & decaps & 199.88 & 175.76 & 1.14 & 15.7× & -13.7\% \\
-ML-KEM-512 & encaps & 143.69 & 143.34 & 1.00 & 11.7× & -0.2\% \\
-ML-KEM-512 & keygen & 141.40 & 125.73 & 1.12 & 12.8× & -12.5\% \\
-ML-KEM-768 & decaps & 293.01 & 281.07 & 1.04 & 13.7× & -4.2\% \\
-ML-KEM-768 & encaps & 226.37 & 243.12 & 0.93 & 11.3× & 6.9\% \\
-ML-KEM-768 & keygen & 262.70 & 206.69 & 1.27 & 13.7× & -27.1\% \\
+ML-DSA-44 & keygen & 1131.07 & 869.65 & 1.30 & 27.8x & -30.1\% \\
+ML-DSA-44 & sign & 5143.49 & 4795.27 & 1.07 & 59.8x & -7.3\% \\
+ML-DSA-44 & verify & 1033.78 & 982.73 & 1.05 & 37.0x & -5.2\% \\
+ML-DSA-65 & keygen & 1110.95 & 1410.53 & 0.79 & 14.0x & 21.2\% \\
+ML-DSA-65 & sign & 6328.16 & 8046.93 & 0.79 & 43.3x & 21.4\% \\
+ML-DSA-65 & verify & 1324.88 & 1647.08 & 0.80 & 21.2x & 19.6\% \\
+ML-DSA-87 & keygen & 1706.11 & 2252.97 & 0.76 & 16.3x & 24.3\% \\
+ML-DSA-87 & sign & 7697.18 & 9126.69 & 0.84 & 43.5x & 15.7\% \\
+ML-DSA-87 & verify & 1948.94 & 2518.64 & 0.77 & 24.1x & 22.6\% \\
+ML-KEM-1024 & decaps & 414.09 & 471.63 & 0.88 & 9.5x & 12.2\% \\
+ML-KEM-1024 & encaps & 385.76 & 392.15 & 0.98 & 13.0x & 1.6\% \\
+ML-KEM-1024 & keygen & 297.49 & 364.20 & 0.82 & 11.7x & 18.3\% \\
+ML-KEM-512 & decaps & 199.88 & 175.76 & 1.14 & 15.7x & -13.7\% \\
+ML-KEM-512 & encaps & 143.69 & 143.34 & 1.00 & 11.7x & -0.2\% \\
+ML-KEM-512 & keygen & 141.40 & 125.73 & 1.12 & 12.8x & -12.5\% \\
+ML-KEM-768 & decaps & 293.01 & 281.07 & 1.04 & 13.7x & -4.2\% \\
+ML-KEM-768 & encaps & 226.37 & 243.12 & 0.93 & 11.3x & 6.9\% \\
+ML-KEM-768 & keygen & 262.70 & 206.69 & 1.27 & 13.7x & -27.1\% \\
 \bottomrule
 \end{tabular}
 \end{table}

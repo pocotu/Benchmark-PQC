@@ -1,14 +1,14 @@
 #!/bin/bash
 ################################################################################
-# Script de verificación del entorno
+# Environment verification script
 ################################################################################
 
 set -e
 
-echo "Verificación del Entorno de Desarrollo"
+echo "Development Environment Verification"
 echo "========================================="
 
-# Colores
+# Colors
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
@@ -28,17 +28,17 @@ echo "QEMU:"
 check_command qemu-system-aarch64
 check_command qemu-system-riscv64
 
-echo "Compiladores:"
+echo "Compilers:"
 check_command gcc
 check_command aarch64-linux-gnu-gcc
 check_command riscv64-linux-gnu-gcc
 
-echo "Herramientas:"
+echo "Tools:"
 check_command cmake
 check_command git
 check_command python3
 
-echo "Librerías:"
+echo "Libraries:"
 if pkg-config --exists openssl; then
     echo -e "${GREEN}[OK]${NC} openssl-dev"
 else
@@ -48,10 +48,10 @@ fi
 
 echo "========================================="
 if [ $ERRORS -eq 0 ]; then
-    echo -e "${GREEN}[OK] Entorno verificado correctamente${NC}"
+    echo -e "${GREEN}[OK] Environment verified successfully${NC}"
     exit 0
 else
-    echo -e "${RED}[✗] Se encontraron $ERRORS errores${NC}"
-    echo "Por favor, instala las herramientas faltantes"
+    echo -e "${RED}[X] Found $ERRORS errors${NC}"
+    echo "Please install the missing tools"
     exit 1
 fi

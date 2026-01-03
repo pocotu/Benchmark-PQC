@@ -60,8 +60,8 @@ show_main_menu() {
     echo -e "${CYAN}│${RESET}    ${GREEN}6)${RESET} Run QEMU Benchmarks (ARM64 + RISC-V64)"
     echo -e "${CYAN}│${RESET}"
     echo -e "${CYAN}│${RESET}  ${BOLD}Analysis${RESET}"
-    echo -e "${CYAN}│${RESET}    ${GREEN}7)${RESET} Full Analysis Pipeline"
-    echo -e "${CYAN}│${RESET}    ${GREEN}8)${RESET} Full PKI Modeling"
+    echo -e "${CYAN}│${RESET}    ${GREEN}7)${RESET} Statistical Analysis"
+    echo -e "${CYAN}│${RESET}    ${GREEN}8)${RESET} Generate Figures"
     echo -e "${CYAN}│${RESET}"
     echo -e "${CYAN}│${RESET}  ${BOLD}Validation${RESET}"
     echo -e "${CYAN}│${RESET}    ${GREEN}9)${RESET} Validate Data Integrity"
@@ -168,13 +168,33 @@ action_run_qemu_benchmarks() {
     press_any_key
 }
 
-action_full_analysis() {
-    execute_make_target "full-analysis" "Full Analysis Pipeline"
+action_statistical_analysis() {
+    echo ""
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${RESET}"
+    echo -e "${BLUE}Running Statistical Analysis${RESET}"
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${RESET}"
+    echo ""
+    
+    if python3 "${PROJECT_ROOT}/src/analysis/statistical_analysis.py"; then
+        show_status_bar "✓ Statistical Analysis completed" "${GREEN}"
+    else
+        show_status_bar "✗ Statistical Analysis failed" "${RED}"
+    fi
     press_any_key
 }
 
-action_full_pki_modeling() {
-    execute_make_target "full-pki-modeling" "Full PKI Modeling"
+action_generate_figures() {
+    echo ""
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${RESET}"
+    echo -e "${BLUE}Generating Figures${RESET}"
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${RESET}"
+    echo ""
+    
+    if python3 "${PROJECT_ROOT}/src/analysis/generate_figures.py"; then
+        show_status_bar "✓ Figures generated" "${GREEN}"
+    else
+        show_status_bar "✗ Figure generation failed" "${RED}"
+    fi
     press_any_key
 }
 
@@ -250,8 +270,8 @@ main_menu_loop() {
             4)  action_compile_benchmarks ;;
             5)  action_run_benchmarks ;;
             6)  action_run_qemu_benchmarks ;;
-            7)  action_full_analysis ;;
-            8)  action_full_pki_modeling ;;
+            7)  action_statistical_analysis ;;
+            8)  action_generate_figures ;;
             9)  action_validate_data ;;
             10) action_verify_checksums ;;
             11) action_clean ;;

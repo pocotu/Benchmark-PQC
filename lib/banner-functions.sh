@@ -42,8 +42,8 @@ show_project_banner() {
 ## Show Makefile help header (shorter version for make help)
 show_makefile_header() {
     echo "$(tput setaf 6)╔════════════════════════════════════════════════════════════╗$(tput sgr0)"
-    echo "$(tput setaf 6)║  Benchmarks PQC - Makefile Principal                      ║$(tput sgr0)"
-    echo "$(tput setaf 6)║  ML-KEM & ML-DSA Performance en ARM vs RISC-V            ║$(tput sgr0)"
+    echo "$(tput setaf 6)║  Benchmarks PQC - Main Makefile                           ║$(tput sgr0)"
+    echo "$(tput setaf 6)║  ML-KEM & ML-DSA Performance on ARM vs RISC-V             ║$(tput sgr0)"
     echo "$(tput setaf 6)╚════════════════════════════════════════════════════════════╝$(tput sgr0)"
 }
 

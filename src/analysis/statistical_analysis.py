@@ -3,13 +3,13 @@
 Statistical Analysis for PQC Benchmarks
 
 This script performs:
-- Análisis estadístico descriptivo
-- Pruebas de hipótesis (t-test, Mann-Whitney)
-- Cálculo de ratios de rendimiento
-- Generación de tablas LaTeX
+- Descriptive statistical analysis
+- Hypothesis testing (t-test, Mann-Whitney)
+- Performance ratio calculations
+- LaTeX table generation
 
-Ubicación: src/analysis/statistical_analysis.py
-Salida: results/analysis/
+Location: src/analysis/statistical_analysis.py
+Output: results/analysis/
 """
 
 import pandas as pd
@@ -19,63 +19,63 @@ from pathlib import Path
 import json
 from datetime import datetime
 
-# Configuración de rutas (relativas a la raíz del proyecto)
+# Path configuration (relative to project root)
 BASE_DIR = Path(__file__).parent.parent.parent  # Benchmarks-PQC/
 DATA_DIR = BASE_DIR / "data" / "processed"
 OUTPUT_DIR = BASE_DIR / "results" / "analysis"
 
-# Crear directorios si no existen
+# Create directories if they don't exist
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def load_data():
-    """Carga los datos procesados."""
+    """Load processed data."""
     csv_path = DATA_DIR / "processed_data.csv"
     if not csv_path.exists():
-        raise FileNotFoundError(f"No se encontró {csv_path}")
+        raise FileNotFoundError(f"File not found: {csv_path}")
     
     df = pd.read_csv(csv_path)
-    print(f"✓ Datos cargados: {len(df)} registros")
+    print(f"[OK] Data loaded: {len(df)} records")
     return df
 
 
 def descriptive_statistics(df):
-    """Genera estadísticas descriptivas por arquitectura/algoritmo/operación."""
+    """Generate descriptive statistics by architecture/algorithm/operation."""
     print("\n" + "="*60)
-    print("ANÁLISIS ESTADÍSTICO DESCRIPTIVO")
+    print("DESCRIPTIVE STATISTICAL ANALYSIS")
     print("="*60)
     
-    # Resumen por arquitectura
+    # Summary by architecture
     arch_summary = df.groupby('architecture').agg({
         'mean_us': ['mean', 'std', 'min', 'max'],
         'num_samples': 'sum'
     }).round(2)
     
-    print("\n📊 Resumen por Arquitectura:")
+    print("\n[*] Summary by Architecture:")
     print(arch_summary)
     
-    # Resumen por algoritmo
+    # Summary by algorithm
     algo_summary = df.groupby(['architecture', 'algorithm']).agg({
         'mean_us': 'mean',
         'stddev_us': 'mean',
         'cv_percent': 'mean'
     }).round(2)
     
-    print("\n📊 Resumen por Algoritmo:")
+    print("\n[*] Summary by Algorithm:")
     print(algo_summary)
     
     return arch_summary, algo_summary
 
 
 def calculate_ratios(df):
-    """Calcula ratios de rendimiento ARM64/RISC-V64 y overhead QEMU."""
+    """Calculate ARM64/RISC-V64 performance ratios and QEMU overhead."""
     print("\n" + "="*60)
-    print("CÁLCULO DE RATIOS DE RENDIMIENTO")
+    print("PERFORMANCE RATIO CALCULATION")
     print("="*60)
     
     results = []
     
-    # Obtener datos por arquitectura
+    # Get data by architecture
     arm64 = df[df['architecture'] == 'ARM64'].set_index(['algorithm', 'operation'])
     riscv64 = df[df['architecture'] == 'RISC-V64'].set_index(['algorithm', 'operation'])
     x86_64 = df[df['architecture'] == 'x86_64'].set_index(['algorithm', 'operation'])
@@ -86,14 +86,14 @@ def calculate_ratios(df):
             riscv_time = riscv64.loc[idx, 'mean_us']
             x86_time = x86_64.loc[idx, 'mean_us']
             
-            # Ratio ARM64/RISC-V64 (< 1 significa ARM64 más rápido)
+            # ARM64/RISC-V64 ratio (< 1 means ARM64 faster)
             ratio_arm_riscv = arm_time / riscv_time
             
-            # Overhead QEMU vs x86_64
+            # QEMU overhead vs x86_64
             overhead_arm = arm_time / x86_time
             overhead_riscv = riscv_time / x86_time
             
-            # Ventaja porcentual de ARM64 sobre RISC-V64
+            # ARM64 percentage advantage over RISC-V64
             advantage_arm = ((riscv_time - arm_time) / riscv_time) * 100
             
             results.append({
@@ -110,37 +110,40 @@ def calculate_ratios(df):
     
     ratios_df = pd.DataFrame(results)
     
-    # Mostrar resultados
-    print("\n📊 Ratios ARM64/RISC-V64:")
+    # Display results
+    print("\n[*] ARM64/RISC-V64 Ratios:")
     for _, row in ratios_df.iterrows():
         faster = "ARM64" if row['advantage_arm_percent'] > 0 else "RISC-V64"
         diff = abs(row['advantage_arm_percent'])
-        print(f"  {row['algorithm']:12} {row['operation']:8}: {faster} {diff:.1f}% más rápido")
+        print(f"  {row['algorithm']:12} {row['operation']:8}: {faster} {diff:.1f}% faster")
     
-    # Resumen por tipo de algoritmo
-    print("\n📊 Resumen por Tipo de Algoritmo:")
+    # Summary by algorithm type
+    print("\n[*] Summary by Algorithm Type:")
     mlkem = ratios_df[ratios_df['algorithm'].str.contains('ML-KEM')]
     mldsa = ratios_df[ratios_df['algorithm'].str.contains('ML-DSA')]
     
-    print(f"  ML-KEM promedio: ARM64 {mlkem['advantage_arm_percent'].mean():.1f}% {'más rápido' if mlkem['advantage_arm_percent'].mean() > 0 else 'más lento'}")
-    print(f"  ML-DSA promedio: ARM64 {mldsa['advantage_arm_percent'].mean():.1f}% {'más rápido' if mldsa['advantage_arm_percent'].mean() > 0 else 'más lento'}")
+    mlkem_avg = mlkem['advantage_arm_percent'].mean()
+    mldsa_avg = mldsa['advantage_arm_percent'].mean()
     
-    # Guardar resultados
+    print(f"  ML-KEM average: ARM64 {mlkem_avg:.1f}% {'faster' if mlkem_avg > 0 else 'slower'}")
+    print(f"  ML-DSA average: ARM64 {mldsa_avg:.1f}% {'faster' if mldsa_avg > 0 else 'slower'}")
+    
+    # Save results
     ratios_df.to_csv(OUTPUT_DIR / "performance_ratios.csv", index=False)
-    print(f"\n✓ Ratios guardados en {OUTPUT_DIR / 'performance_ratios.csv'}")
+    print(f"\n[OK] Ratios saved to {OUTPUT_DIR / 'performance_ratios.csv'}")
     
     return ratios_df
 
 
 def hypothesis_tests(df):
-    """Realiza pruebas de hipótesis para comparar arquitecturas."""
+    """Perform hypothesis tests to compare architectures."""
     print("\n" + "="*60)
-    print("PRUEBAS DE HIPÓTESIS")
+    print("HYPOTHESIS TESTING")
     print("="*60)
     
     results = []
     
-    # Comparar ARM64 vs RISC-V64 para cada algoritmo/operación
+    # Compare ARM64 vs RISC-V64 for each algorithm/operation
     algorithms = df['algorithm'].unique()
     operations = df['operation'].unique()
     
@@ -163,12 +166,11 @@ def hypothesis_tests(df):
             arm_n = arm_data['num_samples'].values[0]
             riscv_n = riscv_data['num_samples'].values[0]
             
-            # Test t de Welch (no asume varianzas iguales)
-            # Usando estadístico t calculado manualmente
+            # Welch's t-test (does not assume equal variances)
             se = np.sqrt((arm_std**2 / arm_n) + (riscv_std**2 / riscv_n))
             t_stat = (arm_mean - riscv_mean) / se if se > 0 else 0
             
-            # Grados de libertad de Welch-Satterthwaite
+            # Welch-Satterthwaite degrees of freedom
             df_num = ((arm_std**2/arm_n) + (riscv_std**2/riscv_n))**2
             df_den = ((arm_std**2/arm_n)**2/(arm_n-1)) + ((riscv_std**2/riscv_n)**2/(riscv_n-1))
             dof = df_num / df_den if df_den > 0 else 1
@@ -176,18 +178,18 @@ def hypothesis_tests(df):
             # p-value (two-tailed)
             p_value = 2 * (1 - stats.t.cdf(abs(t_stat), dof))
             
-            # Intervalo de confianza 95%
+            # 95% confidence interval
             t_crit = stats.t.ppf(0.975, dof)
             ci_lower = (arm_mean - riscv_mean) - t_crit * se
             ci_upper = (arm_mean - riscv_mean) + t_crit * se
             
-            # Tamaño del efecto (Cohen's d)
+            # Effect size (Cohen's d)
             pooled_std = np.sqrt(((arm_n-1)*arm_std**2 + (riscv_n-1)*riscv_std**2) / (arm_n + riscv_n - 2))
             cohens_d = (arm_mean - riscv_mean) / pooled_std if pooled_std > 0 else 0
             
-            # Interpretación
+            # Interpretation
             significant = p_value < 0.05
-            effect_size = "pequeño" if abs(cohens_d) < 0.5 else "mediano" if abs(cohens_d) < 0.8 else "grande"
+            effect_size = "small" if abs(cohens_d) < 0.5 else "medium" if abs(cohens_d) < 0.8 else "large"
             
             results.append({
                 'algorithm': algo,
@@ -206,71 +208,71 @@ def hypothesis_tests(df):
     
     tests_df = pd.DataFrame(results)
     
-    # Mostrar resultados
-    print("\n📊 Resultados de Pruebas t de Welch (ARM64 vs RISC-V64):")
+    # Display results
+    print("\n[*] Welch's t-test Results (ARM64 vs RISC-V64):")
     print("-" * 80)
     for _, row in tests_df.iterrows():
         sig = "***" if row['p_value'] < 0.001 else "**" if row['p_value'] < 0.01 else "*" if row['p_value'] < 0.05 else ""
         print(f"  {row['algorithm']:12} {row['operation']:8}: t={row['t_statistic']:7.2f}, p={row['p_value']:.4f}{sig}, d={row['cohens_d']:.2f} ({row['effect_size']})")
     
-    # Resumen
+    # Summary
     significant_count = tests_df['significant'].sum()
     total_count = len(tests_df)
-    print(f"\n📊 Resumen: {significant_count}/{total_count} comparaciones significativas (p < 0.05)")
+    print(f"\n[*] Summary: {significant_count}/{total_count} significant comparisons (p < 0.05)")
     
-    # Guardar resultados
+    # Save results
     tests_df.to_csv(OUTPUT_DIR / "hypothesis_tests.csv", index=False)
-    print(f"✓ Pruebas guardadas en {OUTPUT_DIR / 'hypothesis_tests.csv'}")
+    print(f"[OK] Tests saved to {OUTPUT_DIR / 'hypothesis_tests.csv'}")
     
     return tests_df
 
 
 def generate_latex_tables(df, ratios_df):
-    """Genera tablas LaTeX para la tesis."""
+    """Generate LaTeX tables for thesis."""
     print("\n" + "="*60)
-    print("GENERACIÓN DE TABLAS LATEX")
+    print("LATEX TABLE GENERATION")
     print("="*60)
     
-    # Tabla de ratios de rendimiento
-    latex_ratios = """% Tabla de ratios de rendimiento - Generada automáticamente
-% Fecha: """ + datetime.now().strftime("%Y-%m-%d %H:%M") + """
+    # Performance ratios table
+    latex_ratios = """% Performance ratios table - Auto-generated
+% Date: """ + datetime.now().strftime("%Y-%m-%d %H:%M") + """
 
 \\begin{table}[H]
 \\centering
-\\caption{Ratios de rendimiento y overhead de emulación QEMU}
+\\caption{Performance ratios and QEMU emulation overhead}
 \\label{tab:performance_ratios}
 \\begin{tabular}{llrrrrr}
 \\toprule
-\\textbf{Algoritmo} & \\textbf{Op.} & \\textbf{ARM64} & \\textbf{RISC-V64} & \\textbf{Ratio} & \\textbf{Overhead} & \\textbf{Ventaja} \\\\
+\\textbf{Algorithm} & \\textbf{Op.} & \\textbf{ARM64} & \\textbf{RISC-V64} & \\textbf{Ratio} & \\textbf{Overhead} & \\textbf{Advantage} \\\\
  & & ($\\mu$s) & ($\\mu$s) & ARM/RV & QEMU & ARM64 \\\\
 \\midrule
 """
     
     for _, row in ratios_df.iterrows():
-        latex_ratios += f"{row['algorithm']} & {row['operation']} & {row['arm64_us']:.2f} & {row['riscv64_us']:.2f} & {row['ratio_arm_riscv']:.2f} & {row['overhead_arm_qemu']:.1f}× & {row['advantage_arm_percent']:.1f}\\% \\\\\n"
+        latex_ratios += f"{row['algorithm']} & {row['operation']} & {row['arm64_us']:.2f} & {row['riscv64_us']:.2f} & {row['ratio_arm_riscv']:.2f} & {row['overhead_arm_qemu']:.1f}x & {row['advantage_arm_percent']:.1f}\\% \\\\\n"
     
     latex_ratios += """\\bottomrule
 \\end{tabular}
 \\end{table}
 """
     
-    # Guardar tabla LaTeX
+    # Save LaTeX table
     latex_path = OUTPUT_DIR / "tabla_ratios_rendimiento.tex"
     with open(latex_path, 'w') as f:
         f.write(latex_ratios)
-    print(f"✓ Tabla LaTeX guardada en {latex_path}")
+    print(f"[OK] LaTeX table saved to {latex_path}")
     
     return latex_ratios
 
 
 def analyze_performance_factors(df):
-    """Analiza factores que afectan el rendimiento."""
+    """Analyze factors affecting performance."""
     print("\n" + "="*60)
-    print("ANÁLISIS DE FACTORES DE RENDIMIENTO")
+    print("PERFORMANCE FACTOR ANALYSIS")
     print("="*60)
     
-    # Factor 1: Impacto del nivel de seguridad
-    print("\n📊 Impacto del Nivel de Seguridad:")
+    # Factor 1: Security level impact
+    print("\n[*] Security Level Impact:")
     
     for arch in ['x86_64', 'ARM64', 'RISC-V64']:
         print(f"\n  {arch}:")
@@ -282,7 +284,7 @@ def analyze_performance_factors(df):
             mlkem_512 = mlkem_data[mlkem_data['algorithm'] == 'ML-KEM-512']['mean_us'].mean()
             mlkem_768 = mlkem_data[mlkem_data['algorithm'] == 'ML-KEM-768']['mean_us'].mean()
             mlkem_1024 = mlkem_data[mlkem_data['algorithm'] == 'ML-KEM-1024']['mean_us'].mean()
-            print(f"    ML-KEM: 512→768 = {mlkem_768/mlkem_512:.2f}×, 512→1024 = {mlkem_1024/mlkem_512:.2f}×")
+            print(f"    ML-KEM: 512->768 = {mlkem_768/mlkem_512:.2f}x, 512->1024 = {mlkem_1024/mlkem_512:.2f}x")
         
         # ML-DSA
         mldsa_data = arch_data[arch_data['algorithm'].str.contains('ML-DSA')]
@@ -290,10 +292,10 @@ def analyze_performance_factors(df):
             mldsa_44 = mldsa_data[mldsa_data['algorithm'] == 'ML-DSA-44']['mean_us'].mean()
             mldsa_65 = mldsa_data[mldsa_data['algorithm'] == 'ML-DSA-65']['mean_us'].mean()
             mldsa_87 = mldsa_data[mldsa_data['algorithm'] == 'ML-DSA-87']['mean_us'].mean()
-            print(f"    ML-DSA: 44→65 = {mldsa_65/mldsa_44:.2f}×, 44→87 = {mldsa_87/mldsa_44:.2f}×")
+            print(f"    ML-DSA: 44->65 = {mldsa_65/mldsa_44:.2f}x, 44->87 = {mldsa_87/mldsa_44:.2f}x")
     
-    # Factor 2: Comparación de operaciones
-    print("\n📊 Costo Relativo de Operaciones (vs KeyGen):")
+    # Factor 2: Operation comparison
+    print("\n[*] Relative Operation Cost (vs KeyGen):")
     
     for arch in ['x86_64', 'ARM64', 'RISC-V64']:
         print(f"\n  {arch}:")
@@ -306,7 +308,7 @@ def analyze_performance_factors(df):
                 keygen = algo_data[algo_data['operation'] == 'keygen']['mean_us'].values[0]
                 encaps = algo_data[algo_data['operation'] == 'encaps']['mean_us'].values[0]
                 decaps = algo_data[algo_data['operation'] == 'decaps']['mean_us'].values[0]
-                print(f"    {algo}: Encaps={encaps/keygen:.2f}×, Decaps={decaps/keygen:.2f}×")
+                print(f"    {algo}: Encaps={encaps/keygen:.2f}x, Decaps={decaps/keygen:.2f}x")
         
         # ML-DSA
         for algo in ['ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87']:
@@ -315,16 +317,16 @@ def analyze_performance_factors(df):
                 keygen = algo_data[algo_data['operation'] == 'keygen']['mean_us'].values[0]
                 sign = algo_data[algo_data['operation'] == 'sign']['mean_us'].values[0]
                 verify = algo_data[algo_data['operation'] == 'verify']['mean_us'].values[0]
-                print(f"    {algo}: Sign={sign/keygen:.2f}×, Verify={verify/keygen:.2f}×")
+                print(f"    {algo}: Sign={sign/keygen:.2f}x, Verify={verify/keygen:.2f}x")
 
 
 def model_tls_overhead(df):
-    """Modela el overhead de handshake TLS 1.3 con PQC."""
+    """Model TLS 1.3 handshake overhead with PQC."""
     print("\n" + "="*60)
-    print("MODELADO DE OVERHEAD TLS 1.3")
+    print("TLS 1.3 OVERHEAD MODELING")
     print("="*60)
     
-    # Usar ML-KEM-768 y ML-DSA-65 (nivel NIST 3, recomendado)
+    # Use ML-KEM-768 and ML-DSA-65 (NIST level 3, recommended)
     results = {}
     
     for arch in ['x86_64', 'ARM64', 'RISC-V64']:
@@ -341,10 +343,10 @@ def model_tls_overhead(df):
         sign = mldsa[mldsa['operation'] == 'sign']['mean_us'].values[0]
         verify = mldsa[mldsa['operation'] == 'verify']['mean_us'].values[0]
         
-        # Overhead de handshake TLS 1.3
-        # Cliente: Encaps + Verify (certificado servidor)
+        # TLS 1.3 handshake overhead
+        # Client: Encaps + Verify (server certificate)
         client_overhead = encaps + verify
-        # Servidor: KeyGen + Decaps + Sign (CertificateVerify)
+        # Server: KeyGen + Decaps + Sign (CertificateVerify)
         server_overhead = keygen_kem + decaps + sign
         total_overhead = client_overhead + server_overhead
         
@@ -356,28 +358,28 @@ def model_tls_overhead(df):
         }
         
         print(f"\n  {arch}:")
-        print(f"    Cliente (Encaps + Verify): {client_overhead:.2f} µs")
-        print(f"    Servidor (KeyGen + Decaps + Sign): {server_overhead:.2f} µs")
-        print(f"    Total: {total_overhead:.2f} µs ({total_overhead/1000:.3f} ms)")
+        print(f"    Client (Encaps + Verify): {client_overhead:.2f} us")
+        print(f"    Server (KeyGen + Decaps + Sign): {server_overhead:.2f} us")
+        print(f"    Total: {total_overhead:.2f} us ({total_overhead/1000:.3f} ms)")
     
-    # Comparación con TLS clásico (estimado ~50-100 µs)
-    print("\n📊 Comparación con TLS Clásico (ECDH + ECDSA, ~75 µs):")
+    # Comparison with classical TLS (estimated ~50-100 us)
+    print("\n[*] Comparison with Classical TLS (ECDH + ECDSA, ~75 us):")
     for arch, data in results.items():
         overhead_factor = data['total_us'] / 75
-        print(f"    {arch}: {overhead_factor:.1f}× overhead vs clásico")
+        print(f"    {arch}: {overhead_factor:.1f}x overhead vs classical")
     
-    # Guardar resultados
+    # Save results
     tls_df = pd.DataFrame(results).T
     tls_df.to_csv(OUTPUT_DIR / "tls_overhead_model.csv")
-    print(f"\n✓ Modelo TLS guardado en {OUTPUT_DIR / 'tls_overhead_model.csv'}")
+    print(f"\n[OK] TLS model saved to {OUTPUT_DIR / 'tls_overhead_model.csv'}")
     
     return results
 
 
 def model_pki_throughput(df):
-    """Modela el throughput de emisión de certificados PKI."""
+    """Model PKI certificate issuance throughput."""
     print("\n" + "="*60)
-    print("MODELADO DE THROUGHPUT PKI")
+    print("PKI THROUGHPUT MODELING")
     print("="*60)
     
     results = {}
@@ -385,14 +387,14 @@ def model_pki_throughput(df):
     for arch in ['x86_64', 'ARM64', 'RISC-V64']:
         arch_data = df[df['architecture'] == arch]
         
-        # ML-DSA-65 Sign (operación crítica para emisión)
+        # ML-DSA-65 Sign (critical operation for issuance)
         mldsa = arch_data[arch_data['algorithm'] == 'ML-DSA-65']
         sign_time = mldsa[mldsa['operation'] == 'sign']['mean_us'].values[0]
         
-        # Throughput teórico (solo Sign)
-        throughput_theoretical = 1_000_000 / sign_time  # certs/segundo
+        # Theoretical throughput (Sign only)
+        throughput_theoretical = 1_000_000 / sign_time  # certs/second
         
-        # Throughput con overhead de I/O (10ms, 50ms)
+        # Throughput with I/O overhead (10ms, 50ms)
         throughput_10ms = 1_000_000 / (sign_time + 10_000)
         throughput_50ms = 1_000_000 / (sign_time + 50_000)
         
@@ -404,26 +406,26 @@ def model_pki_throughput(df):
         }
         
         print(f"\n  {arch}:")
-        print(f"    Sign time: {sign_time:.2f} µs")
-        print(f"    Throughput teórico: {throughput_theoretical:.0f} certs/s")
+        print(f"    Sign time: {sign_time:.2f} us")
+        print(f"    Theoretical throughput: {throughput_theoretical:.0f} certs/s")
         print(f"    Throughput (10ms overhead): {throughput_10ms:.0f} certs/s")
         print(f"    Throughput (50ms overhead): {throughput_50ms:.0f} certs/s")
     
-    # Guardar resultados
+    # Save results
     pki_df = pd.DataFrame(results).T
     pki_df.to_csv(OUTPUT_DIR / "pki_throughput_model.csv")
-    print(f"\n✓ Modelo PKI guardado en {OUTPUT_DIR / 'pki_throughput_model.csv'}")
+    print(f"\n[OK] PKI model saved to {OUTPUT_DIR / 'pki_throughput_model.csv'}")
     
     return results
 
 
 def generate_summary_report(df, ratios_df, tests_df):
-    """Genera un reporte resumen en JSON."""
+    """Generate summary report in JSON format."""
     print("\n" + "="*60)
-    print("GENERACIÓN DE REPORTE RESUMEN")
+    print("SUMMARY REPORT GENERATION")
     print("="*60)
     
-    # Calcular métricas resumen
+    # Calculate summary metrics
     mlkem_ratios = ratios_df[ratios_df['algorithm'].str.contains('ML-KEM')]
     mldsa_ratios = ratios_df[ratios_df['algorithm'].str.contains('ML-DSA')]
     
@@ -452,67 +454,67 @@ def generate_summary_report(df, ratios_df, tests_df):
             'avg_effect_size': tests_df['cohens_d'].abs().mean()
         },
         'key_findings': [
-            f"ML-KEM: ARM64 y RISC-V64 tienen rendimiento equivalente (diferencia {mlkem_ratios['advantage_arm_percent'].mean():.1f}%)",
-            f"ML-DSA: ARM64 es {mldsa_ratios['advantage_arm_percent'].mean():.1f}% más rápido que RISC-V64",
-            f"Overhead QEMU promedio: {ratios_df['overhead_arm_qemu'].mean():.1f}× vs x86_64 nativo",
-            f"Sign es la operación más costosa en ML-DSA (2-2.5× KeyGen)"
+            f"ML-KEM: ARM64 and RISC-V64 have equivalent performance (difference {mlkem_ratios['advantage_arm_percent'].mean():.1f}%)",
+            f"ML-DSA: ARM64 is {mldsa_ratios['advantage_arm_percent'].mean():.1f}% faster than RISC-V64",
+            f"Average QEMU overhead: {ratios_df['overhead_arm_qemu'].mean():.1f}x vs native x86_64",
+            f"Sign is the most expensive operation in ML-DSA (2-2.5x KeyGen)"
         ]
     }
     
-    # Guardar reporte
+    # Save report
     report_path = OUTPUT_DIR / "analysis_summary.json"
     with open(report_path, 'w') as f:
         json.dump(report, f, indent=2)
     
-    print(f"✓ Reporte guardado en {report_path}")
+    print(f"[OK] Report saved to {report_path}")
     
-    # Mostrar hallazgos clave
-    print("\n📋 HALLAZGOS CLAVE:")
+    # Display key findings
+    print("\n[*] KEY FINDINGS:")
     for finding in report['key_findings']:
-        print(f"  • {finding}")
+        print(f"  - {finding}")
     
     return report
 
 
 def main():
-    """Función principal de análisis."""
+    """Main analysis function."""
     print("="*60)
-    print("ANÁLISIS ESTADÍSTICO - BENCHMARKS PQC")
-    print("Tesis: ML-KEM y ML-DSA en ARM y RISC-V")
+    print("STATISTICAL ANALYSIS - PQC BENCHMARKS")
+    print("Thesis: ML-KEM and ML-DSA on ARM and RISC-V")
     print("="*60)
-    print(f"Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    print(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     
-    # Cargar datos
+    # Load data
     df = load_data()
     
-    # Análisis estadístico descriptivo
+    # Descriptive statistical analysis
     arch_summary, algo_summary = descriptive_statistics(df)
     
-    # Calcular ratios de rendimiento
+    # Calculate performance ratios
     ratios_df = calculate_ratios(df)
     
-    # Pruebas de hipótesis
+    # Hypothesis testing
     tests_df = hypothesis_tests(df)
     
-    # Generar tablas LaTeX
+    # Generate LaTeX tables
     generate_latex_tables(df, ratios_df)
     
-    # Análisis de factores de rendimiento
+    # Performance factor analysis
     analyze_performance_factors(df)
     
-    # Modelado de overhead TLS
+    # TLS overhead modeling
     model_tls_overhead(df)
     
-    # Modelado de throughput PKI
+    # PKI throughput modeling
     model_pki_throughput(df)
     
-    # Generar reporte resumen
+    # Generate summary report
     report = generate_summary_report(df, ratios_df, tests_df)
     
     print("\n" + "="*60)
-    print("✅ ANÁLISIS COMPLETADO")
+    print("[OK] ANALYSIS COMPLETED")
     print("="*60)
-    print(f"Archivos generados en: {OUTPUT_DIR}")
+    print(f"Files generated in: {OUTPUT_DIR}")
     
     return df, ratios_df, tests_df, report
 
